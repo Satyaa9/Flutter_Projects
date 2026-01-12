@@ -1,34 +1,31 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/LoginPage.dart';
+import 'package:flutter_application_1/Profile.dart';
 
-class Homepage extends StatelessWidget {
-  Homepage({super.key});
+class LoginPage extends StatelessWidget {
+  LoginPage({super.key});
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  Future<void> register(
+  Future<void> login(
     String email,
     String password,
     BuildContext context,
   ) async {
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
-    emailController.clear();
-    passwordController.clear();
-    print("user register");
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => LoginPage()),
+      MaterialPageRoute(builder: (_) => Profile(email: email)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Auth")),
+      appBar: AppBar(title: Text("Login Page")),
       body: Center(
         child: Column(
           children: [
@@ -36,22 +33,9 @@ class Homepage extends StatelessWidget {
             TextField(controller: passwordController),
             ElevatedButton(
               onPressed: () {
-                register(
-                  emailController.text,
-                  passwordController.text,
-                  context,
-                );
+                login(emailController.text, passwordController.text, context);
               },
               child: Text("Register"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => LoginPage()),
-                );
-              },
-              child: Text("got to Login page"),
             ),
           ],
         ),
