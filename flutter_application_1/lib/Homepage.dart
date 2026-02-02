@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/LoginPage.dart';
+import 'package:flutter_application_1/Profile.dart';
 
 class Homepage extends StatelessWidget {
   Homepage({super.key});
@@ -12,16 +14,22 @@ class Homepage extends StatelessWidget {
     String password,
     BuildContext context,
   ) async {
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+    var user = await FirebaseAuth.instance.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
     emailController.clear();
     passwordController.clear();
     print("user register");
+
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user.user!.uid)
+        .set({"email": email, "createdAt": Timestamp.now()});
+
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => LoginPage()),
+      MaterialPageRoute(builder: (_) => Profile(email: email)),
     );
   }
 
